@@ -40,18 +40,22 @@ class CompanyController extends Controller
             $request->validate([
                 'name' => 'required',
                 'email' => 'required|email',
-                'logo' => 'required|mimes:png|max:2000',
+                'logo' => 'mimes:png|max:2000',
                 'website' => 'required',
             ]);
-            $logo = explode('.',$request->logo->getClientOriginalName());
-            $logo=$logo[0];
-            $logo_name = $logo.'-'.time().'.'.$request->logo->extension();
-            $request->logo->move(public_path('image/company'),$logo_name);
+            
+            if($request->logo){
+                $logo = explode('.',$request->logo->getClientOriginalName());
+                $logo=$logo[0];
+                $logo_name = $logo.'-'.time().'.'.$request->logo->extension();
+                $request->logo->move(public_path('image/company'),$logo_name);
+            }
+           
 
             Company::create([
                 'name' => $request->name,
                 'email' => $request->email,
-                'logo' => $logo_name,
+                'logo' => $logo_name ? $logo_name : null,
                 'website' => $request->website,
             ]);
             return redirect('/company')->with('status','Data Company Berhasil Ditambahkan!!!');
@@ -117,6 +121,14 @@ class CompanyController extends Controller
             $logo_name = $logo.'-'.time().'.'.$request->logo->extension();
             $request->logo->move(public_path('image/company'),$logo_name);
             $logo_name = $logo_name;
+
+            $image_path = public_path("/image/company/".$company->logo);
+            if(file_exists($image_path)) {
+                unlink($image_path);
+            }
+
+
+
         }
 
             $company->update([
