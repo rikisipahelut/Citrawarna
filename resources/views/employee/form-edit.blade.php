@@ -15,11 +15,21 @@
                         <label for="exampleInputEmail1" class="form-label">Name</label>
                         <input type="text" class="form-control @error('name') is-invalid @enderror" id="" aria-describedby="" name="name" value="{{$employee->name}}">
                     </div>
+                    
                    
                     <div class="mb-3">
                         <label for="exampleInputEmail1" class="form-label">Company</label>
-                        <input type="number" min="1" max="3" class="form-control @error('company') is-invalid @enderror" id="" aria-describedby="" name="company" value="{{$employee->company_id}}">
+                        <select name="company" id="company"  class="form-control @error('company') is-invalid @enderror " value="{{old('company')}}">
+                            <option value="{{$employee->company_id}}">Choose Company</option>
+                            @foreach($companies as $company)    
+                                <option value="{{$company->id}}">{{$company->name}}</option>
+                            @endforeach
+                        </select>
+                        @error('company')
+                           <p class="text-danger">{{$message}}</p> 
+                        @enderror
                     </div>
+                    
                     <div class="mb-3">
                         <label for="exampleInputEmail1" class="form-label">Email address</label>
                         <input type="email" class="form-control @error('email') is-invalid @enderror"" name="email" id="exampleInputEmail1" aria-describedby="emailHelp" value="{{ $employee->email}}">

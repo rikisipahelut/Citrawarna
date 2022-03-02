@@ -8,7 +8,7 @@
                 <div class="card-header">Form Employee</div>
 
                 <div class="card-body">
-                <form method="post" action="{{route('employee.store')}}">
+                <form method="post" action="{{route('employee.store')}}" novalidate>
                     @csrf
                     <div class="mb-3">
                         <label for="exampleInputEmail1" class="form-label">Name</label>
@@ -19,12 +19,16 @@
                     </div>
                    
                     <div class="mb-3">
-                        <select name="company" id="company"  class="form-control" value="{{old('company')}}">
+                        <label for="exampleInputEmail1" class="form-label">Company</label>
+                        <select name="company" id="company"  class="form-control @error('company') is-invalid @enderror " value="{{old('company')}}">
+                            <option value="">Choose Company</option>
                             @foreach($companies as $company)    
                                 <option value="{{$company->id}}">{{$company->name}}</option>
                             @endforeach
                         </select>
-                        <label for="exampleInputEmail1" class="form-label">Company</label>
+                        @error('company')
+                           <p class="text-danger">{{$message}}</p> 
+                        @enderror
                     </div>
                     <div class="mb-3">
                         <label for="exampleInputEmail1" class="form-label">Email address</label>

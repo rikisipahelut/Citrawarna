@@ -73,7 +73,8 @@ class EmployeeController extends Controller
     public function edit(Employee $employee)
     {
         // dd($employee);
-        return view('employee.form-edit', ['employee' => $employee]);
+        $companies=Company::all();
+        return view('employee.form-edit', ['employee' => $employee,'companies' => $companies]);
     }
 
     /**
