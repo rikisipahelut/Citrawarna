@@ -20,10 +20,11 @@
                     <div class="mb-3">
                         <label for="exampleInputEmail1" class="form-label">Company</label>
                         <select name="company" id="company"  class="form-control @error('company') is-invalid @enderror " value="{{old('company')}}">
-                            <option value="{{$employee->company_id}}">Choose Company</option>
+                            <option value="">Choose Company</option>
                             @foreach($companies as $company)    
-                                <option value="{{$company->id}}">{{$company->name}}</option>
+                                <option value="{{$company->id}}" {{ $company->id == $employee->company_id ? "selected" : "" }}>{{$company->name}}</option>
                             @endforeach
+                            
                         </select>
                         @error('company')
                            <p class="text-danger">{{$message}}</p> 
