@@ -5,8 +5,13 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Company;
 use Illuminate\Support\Facades\Storage;
+
 class CompanyController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
     /**
      * Display a listing of the resource.
      *
@@ -15,7 +20,7 @@ class CompanyController extends Controller
     public function index()
     {
         $data = Company::paginate(5);
-        return view('company.index',['companies'=>$data]);
+        return view('company.index', ['companies' => $data]);
     }
 
     /**
@@ -36,33 +41,29 @@ class CompanyController extends Controller
      */
     public function store(Request $request)
     {
-        
-            $request->validate([
-                'name' => 'required',
-                'email' => 'required|email',
-                'logo' => 'mimes:png|max:2000',
-                'website' => 'required',
-            ]);
-            
-            if($request->logo){
-                $logo = explode('.',$request->logo->getClientOriginalName());
-                $logo=$logo[0];
-                $logo_name = $logo.'-'.time().'.'.$request->logo->extension();
-                $request->logo->move(public_path('image/company'),$logo_name);
-            }
-           
 
-            Company::create([
-                'name' => $request->name,
-                'email' => $request->email,
-                'logo' => $logo_name ? $logo_name : null,
-                'website' => $request->website,
-            ]);
-            return redirect('/company')->with('status','Data Company Berhasil Ditambahkan!!!');
-     
+        $request->validate([
+            'name' => 'required',
+            'email' => 'required|email',
+            'logo' => 'mimes:png|max:2000',
+            'website' => 'required',
+        ]);
 
-        
+        if ($request->logo) {
+            $logo = explode('.', $request->logo->getClientOriginalName());
+            $logo = $logo[0];
+            $logo_name = $logo . '-' . time() . '.' . $request->logo->extension();
+            $request->logo->move(public_path('image/company'), $logo_name);
+        }
 
+
+        Company::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'logo' => $logo_name ? $logo_name : null,
+            'website' => $request->website,
+        ]);
+        return redirect('/company')->with('status', 'Data Company Berhasil Ditambahkan!!!');
     }
 
     /**
@@ -85,9 +86,9 @@ class CompanyController extends Controller
     public function edit($id)
     {
         // dd($id);
-        $data = Company::where('id',$id)->get();
+        $data = Company::where('id', $id)->get();
         // dd($data);
-        return view('company.form-edit',['details'=>$data]);
+        return view('company.form-edit', ['details' => $data]);
     }
 
     /**
@@ -100,15 +101,13 @@ class CompanyController extends Controller
     public function update(Request $request, Company $company)
     {
         $logo_name = $company->logo;
-        if(empty($request->logo)){
+        if (empty($request->logo)) {
             $request->validate([
                 'name' => 'required',
                 'email' => 'required|email',
                 'website' => 'required',
             ]);
-            
-            
-        }else{
+        } else {
             $request->validate([
                 'name' => 'required',
                 'email' => 'required|email',
@@ -116,32 +115,26 @@ class CompanyController extends Controller
                 'website' => 'required',
             ]);
 
-            $logo = explode('.',$request->logo->getClientOriginalName());
-            $logo=$logo[0];
-            $logo_name = $logo.'-'.time().'.'.$request->logo->extension();
-            $request->logo->move(public_path('image/company'),$logo_name);
+            $logo = explode('.', $request->logo->getClientOriginalName());
+            $logo = $logo[0];
+            $logo_name = $logo . '-' . time() . '.' . $request->logo->extension();
+            $request->logo->move(public_path('image/company'), $logo_name);
             $logo_name = $logo_name;
 
-            $image_path = public_path("/image/company/".$company->logo);
-            if(file_exists($image_path)) {
+            $image_path = public_path("/image/company/" . $company->logo);
+            if (file_exists($image_path)) {
                 unlink($image_path);
             }
-
-
-
         }
 
-            $company->update([
-                'name' => $request->name,
-                'email' => $request->email,
-                'logo' => $logo_name,
-                'website' => $request->website,
+        $company->update([
+            'name' => $request->name,
+            'email' => $request->email,
+            'logo' => $logo_name,
+            'website' => $request->website,
         ]);
 
-        return redirect('/company')->with('status','Data Company Berhasil DiUpdate!');
-
-
-        
+        return redirect('/company')->with('status', 'Data Company Berhasil DiUpdate!');
     }
 
     /**
@@ -153,15 +146,14 @@ class CompanyController extends Controller
     public function destroy(Company $company)
     {
         // dd($company);
-        $image_path = public_path("/image/company/".$company->logo);
+        $image_path = public_path("/image/company/" . $company->logo);
         // dd($image_path);
-        if(file_exists($image_path)) {
+        if (file_exists($image_path)) {
             unlink($image_path);
             $company->delete();
-            return redirect('/company')->with('status','data berhasil dihapus');
-        }else{
+            return redirect('/company')->with('status', 'data berhasil dihapus');
+        } else {
             return "gagal";
         }
-        
     }
 }

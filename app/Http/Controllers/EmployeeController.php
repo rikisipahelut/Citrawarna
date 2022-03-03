@@ -8,6 +8,10 @@ use Illuminate\Http\Request;
 
 class EmployeeController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
     /**
      * Display a listing of the resource.
      *
@@ -27,7 +31,7 @@ class EmployeeController extends Controller
     public function create()
     {
         $data = Company::all();
-        return view('employee.form',['companies'=>$data]);
+        return view('employee.form', ['companies' => $data]);
     }
 
     /**
@@ -73,8 +77,8 @@ class EmployeeController extends Controller
     public function edit(Employee $employee)
     {
         // dd($employee);
-        $companies=Company::all();
-        return view('employee.form-edit', ['employee' => $employee,'companies' => $companies]);
+        $companies = Company::all();
+        return view('employee.form-edit', ['employee' => $employee, 'companies' => $companies]);
     }
 
     /**
