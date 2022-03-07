@@ -4,6 +4,7 @@
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-8">
+            {{ Breadcrumbs::render('company') }}
             <div class="card">
                 <div class="card-header">Data Company <a href="{{route('company.create')}}">Tambah Company</a></div>
                     @if(session('status'))
